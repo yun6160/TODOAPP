@@ -9,6 +9,14 @@ app.listen(8080, function () {
 
 app.get('/beauty', function(요청, 응답){
   응답.send('뷰티용품 쇼핑 페이지임');
+});
 
+app.get('/', function(요청, 응답){
+  응답.sendFile(__dirname + '/index.html');
+  // 슬래시: 홈페이지라는 뜻
+});
 
+app.get('/write', function(요청, 응답){
+  응답.sendFile(__dirname + '/write.html');
+  
 });
