@@ -1,12 +1,19 @@
 const express = require('express');
 const app = express();
-
+app.set('view engine', 'ejs');
 app.use(express.urlencoded({
   extended: true
 }));
-
 const MongoClient = require('mongodb').MongoClient;
+
+var db;
 MongoClient.connect('mongodb+srv://yun6160:6160dbs@cluster0.bu5yz.mongodb.net/todoapp?retryWrites=true&w=majority', function (에러, client) {
+  if (에러) {
+    return console.log(에러)
+  }
+
+  db = client.db('todoapp');
+
   app.listen(8080, function () {
     console.log('listening on 8080')
   });
@@ -33,5 +40,15 @@ app.get('/write', function (요청, 응답) {
 
 app.post('/add', function (요청, 응답) {
   응답.send('전송완료')
-  console.log(요청.body)
+  console.log(요청.body.todo)
+  console.log(요청.body.startdate)
+  
+  // 오브젝트 데이터타입으로 자료 저장
+  db.collection('post').insertOne({할일 : 요청.body.todo, 날짜 : 요청.body.startdate}, function(에러, 결과){
+    console.log('저장완료');
+  });
+});
+
+app.get('/list', function (요청, 응답) {
+  응답.render('list.ejs');
 });
