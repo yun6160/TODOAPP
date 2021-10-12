@@ -50,5 +50,12 @@ app.post('/add', function (요청, 응답) {
 });
 
 app.get('/list', function (요청, 응답) {
-  응답.render('list.ejs');
+  db.collection('post').find().toArray(function(에러, 결과){
+    console.log(결과)
+    응답.render('list.ejs', { posts : 결과 });
+  });
+  //파일명 post인 애들 모두 찾아주세요
+  // 1. DB에서 자료 찾아주세요
+  // 2. 찾은걸 ejs 파일에 집어넣어주세요
+
 });
