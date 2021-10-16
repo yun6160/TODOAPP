@@ -40,13 +40,22 @@ app.get('/write', function (요청, 응답) {
 
 app.post('/add', function (요청, 응답) {
   응답.send('전송완료')
+  // findeOne : db에서 항목을 찾는다
+  db.collection('counter').findOne({name : '게시물갯수'}, function(에러, 결과){
+    console.log(결과.totalPost)
+    var 총게시물갯수 = 결과.totalPost;
+    // 오브젝트 데이터타입으로 자료 저장
+    db.collection('post').insertOne({ _id : 총게시물갯수 + 1, 할일 : 요청.body.todo, 날짜 : 요청.body.startdate}, function(에러, 결과){
+      console.log('저장완료');
+      // totalPost 라는 항목도 1증가 updateOne : 하나를 수정하고 싶다
+      db.collection('counter').updateOne({name:'게시물갯수'},{ $inc : {totalPost : 1}},function(에러, 결과){
+        if(에러){return console.log(에러)}
+      })
+    });
+  });
   console.log(요청.body.todo)
   console.log(요청.body.startdate)
   
-  // 오브젝트 데이터타입으로 자료 저장
-  db.collection('post').insertOne({할일 : 요청.body.todo, 날짜 : 요청.body.startdate}, function(에러, 결과){
-    console.log('저장완료');
-  });
 });
 
 app.get('/list', function (요청, 응답) {
