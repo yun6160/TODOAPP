@@ -68,3 +68,14 @@ app.get('/list', function (요청, 응답) {
   // 2. 찾은걸 ejs 파일에 집어넣어주세요
 
 });
+
+app.delete('/delete', function(요청, 응답){
+  console.log(요청.body)
+  요청.body._id = parseInt(요청.body._id); // 정수로 변환
+  db.collection('post').deleteOne(요청.body, function(에러, 결과){
+    console.log('삭제완료');
+
+    // 1차적으로 숫자로 요청했지만 문자로 받아서 삭제가 안됨
+
+  });
+});
