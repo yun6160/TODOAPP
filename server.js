@@ -41,27 +41,43 @@ app.get('/write', function (요청, 응답) {
 app.post('/add', function (요청, 응답) {
   응답.send('전송완료')
   // findeOne : db에서 항목을 찾는다
-  db.collection('counter').findOne({name : '게시물갯수'}, function(에러, 결과){
+  db.collection('counter').findOne({
+    name: '게시물갯수'
+  }, function (에러, 결과) {
     console.log(결과.totalPost)
     var 총게시물갯수 = 결과.totalPost;
     // 오브젝트 데이터타입으로 자료 저장
-    db.collection('post').insertOne({ _id : 총게시물갯수 + 1, 할일 : 요청.body.todo, 날짜 : 요청.body.startdate}, function(에러, 결과){
+    db.collection('post').insertOne({
+      _id: 총게시물갯수 + 1,
+      할일: 요청.body.todo,
+      날짜: 요청.body.startdate
+    }, function (에러, 결과) {
       console.log('저장완료');
       // totalPost 라는 항목도 1증가 updateOne : 하나를 수정하고 싶다
-      db.collection('counter').updateOne({name:'게시물갯수'},{ $inc : {totalPost : 1}},function(에러, 결과){
-        if(에러){return console.log(에러)}
+      db.collection('counter').updateOne({
+        name: '게시물갯수'
+      }, {
+        $inc: {
+          totalPost: 1
+        }
+      }, function (에러, 결과) {
+        if (에러) {
+          return console.log(에러)
+        }
       })
     });
   });
   console.log(요청.body.todo)
   console.log(요청.body.startdate)
-  
+
 });
 
 app.get('/list', function (요청, 응답) {
-  db.collection('post').find().toArray(function(에러, 결과){
+  db.collection('post').find().toArray(function (에러, 결과) {
     console.log(결과)
-    응답.render('list.ejs', { posts : 결과 });
+    응답.render('list.ejs', {
+      posts: 결과
+    });
   });
   //파일명 post인 애들 모두 찾아주세요
   // 1. DB에서 자료 찾아주세요
@@ -69,12 +85,15 @@ app.get('/list', function (요청, 응답) {
 
 });
 
-app.delete('/delete', function(요청, 응답){
+app.delete('/delete', function (요청, 응답) {
   console.log(요청.body)
   요청.body._id = parseInt(요청.body._id); // 정수로 변환
-  db.collection('post').deleteOne(요청.body, function(에러, 결과){
+  db.collection('post').deleteOne(요청.body, function (에러, 결과) {
     console.log('삭제완료');
-
+    응답.status(200).send(
+      "성공"
+    );
+    // 응답 코드 200를 보내주세요~ 응답 200 : 성공했음
     // 1차적으로 숫자로 요청했지만 문자로 받아서 삭제가 안됨
 
   });
